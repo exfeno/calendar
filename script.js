@@ -29,18 +29,32 @@ function renderCalendar() {
     let datesHtml = '';
     
     for (let i = start; i > 0; i--) {
-        datesHtml += `<li class="inactive">${endDatePrev - i + 1}</li>`;
+        let ymd = ``;
+        let prevMonth = 0
+        let stringEndDay = (endDatePrev - i + 1).toString().padStart(2, '0');
+        if (month === 0) {
+            let prevYear = (year - 1);
+             prevMonth = (11).toString().padStart(2, '0');
+             ymd = `${prevYear}-${prevMonth}-${stringEndDay}`
+        }
+        else {
+            prevMonth = (month-1).toString().padStart(2, '0');
+            ymd = `${year}-${prevMonth}-${stringEndDay}`;
+        }
+        
+        datesHtml += `<li class="inactive" data-date="${ymd}">${endDatePrev - i + 1}</li>`;
     }
 
 
     for (let i = 1; i <= endDate; i++) {
+        let formatted = `${year}-${(month+1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`
         let className = 
             i === date.getDate() &&
             month === new Date().getMonth() &&
             year === new Date().getFullYear()
                 ? ' class="today"': '';
          
-        datesHtml += `<li${className}>${i}</li>`;
+        datesHtml += `<li${className} data-date="${formatted}">${i}</li>`;
     }
         
 
