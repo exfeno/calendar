@@ -87,5 +87,11 @@ navs.forEach(nav=> {
     });
 });
     
-
+dates.addEventListener('click', e => {
+    const target = e.target;
+    if (!target.classList.contains('inactive') && target.nodeName === 'LI') {
+        date = target.dataset.date;
+        console.log(date);
+    }
+});
 renderCalendar(); 
