@@ -20,6 +20,24 @@ let date = new Date();
 let month = date.getMonth();
 let year = date.getFullYear();
 
+let mainUser = 'currentUser';
+const freeDays = {[mainUser]: new Set()};
+
+let activeUser = mainUser;
+
+function addFreeDay(userId, userDate) {
+    if (!freeDays[userId]) {
+        console.error('User does not exist');
+        return;
+    }
+    freeDays[userId].add(userDate);
+    
+}
+
+
+
+
+
 function renderCalendar() {
     const start = new Date(year, month, 1).getDay();
     const endDate = new Date(year, month + 1, 0).getDate();
@@ -91,7 +109,6 @@ dates.addEventListener('click', e => {
     const target = e.target;
     if (!target.classList.contains('inactive') && target.nodeName === 'LI') {
         date = target.dataset.date;
-        console.log(date);
     }
 });
 renderCalendar(); 
