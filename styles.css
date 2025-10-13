@@ -124,5 +124,34 @@ prev:hover::before, next:hover::before {
     z-index: -1;
 }
 .dates li.inactive {
-    color: #ad6e6e;
+    color: #382b2b;
+    background: repeating-linear-gradient(
+        45deg,
+        #ad6e6e,
+        #ad6e6e 10px,
+        #683d3d 10px,
+        #683d3d 20px
+    );
+    
+}
+.dates li.free {
+    background: repeating-linear-gradient(
+        -45deg,
+       #8fbc8f,
+       #8fbc8f 8px,
+       #9e7272 8px,
+       #937272 16px
+    );
+    color: fff;
+    font-weight: 600;
+}
+.dates li:not(.inactive):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+.dates li.today.free::before {
+    background: #8fbc8f;
+    opacity: 0.7;
 }

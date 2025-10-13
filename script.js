@@ -16,22 +16,62 @@ const months = [
     "November",
     "December",
 ];
+
+// date variables
 let date = new Date();
 let month = date.getMonth();
 let year = date.getFullYear();
 
+//user creation and associated date data structure
 let mainUser = 'currentUser';
 const freeDays = {[mainUser]: new Set()};
-
 let activeUser = mainUser;
 
+//range handling
+let isSelectingRange = false;
+let rangeStart = null;
+let rangeEnd = null;
+
+//functions handling free day user data
 function addFreeDay(userId, userDate) {
     if (!freeDays[userId]) {
         console.error('User does not exist');
         return;
     }
     freeDays[userId].add(userDate);
-    
+}
+
+function isFreeDay(userId, userDate) {
+    if (!freeDays[userId]) {
+        console.error('User does not exist');
+        return false;
+    }
+    return freeDays[userId].has(userDate);
+}
+
+function removeFreeDay(userId, userDate) {
+    if (!freeDays[userId]) {
+        console.error('User does not exist');
+        return;
+    }
+    freeDays[userId].delete(userDate);
+}
+function getDatesInRange(startDate, endDate) {
+    let first = new Date(startDate + 'T00:00:00');
+    let last = new Date(endDate + 'T00:00:00');
+    if (first > last) {
+        let temp = first;
+        first = last;
+        last = temp;
+    }
+    const dates = [];
+    let firstcopy = new Date(first.getTime());
+    while (firstcopy <= last) {
+        let dateStr = `${firstcopy.getFullYear()}-${(firstcopy.getMonth() + 1).toString().padStart(2, '0')}-${firstcopy.getDate().toString().padStart(2, '0')}`;
+        dates.push(dateStr);
+        firstcopy.setDate(firstcopy.getDate()+1);
+    }
+    return dates;
 }
 
 
@@ -65,12 +105,20 @@ function renderCalendar() {
 
 
     for (let i = 1; i <= endDate; i++) {
-        let formatted = `${year}-${(month+1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`
-        let className = 
-            i === date.getDate() &&
+        let formatted = `${year}-${(month+1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+        let classes = '';
+
+         if (i === date.getDate() &&
             month === new Date().getMonth() &&
-            year === new Date().getFullYear()
-                ? ' class="today"': '';
+            year === new Date().getFullYear()) {
+                classes += 'today';
+            }
+
+        if (isFreeDay(activeUser, formatted)) {
+            classes += (classes ? ' ' : '') + 'free';
+        }
+
+        let className = classes ? ` class="${classes}"` : '';
          
         datesHtml += `<li${className} data-date="${formatted}">${i}</li>`;
     }
@@ -108,7 +156,33 @@ navs.forEach(nav=> {
 dates.addEventListener('click', e => {
     const target = e.target;
     if (!target.classList.contains('inactive') && target.nodeName === 'LI') {
-        date = target.dataset.date;
+        const clickedDate = target.dataset.date;
+        if (!isSelectingRange) {
+            rangeStart = clickedDate;
+            isSelectingRange = true;
+            console.log(`Range started: ${rangeStart}`);
+        } else {
+            rangeEnd = clickedDate;
+            const datesInRange = getDatesInRange(rangeStart, rangeEnd);
+            console.log(`Range star: ${rangeStart}, range end: ${rangeEnd}`);
+            console.log('Full array returned:', datesInRange);
+            console.log('Array length:', datesInRange.length);
+            console.log(`Range ended: ${rangeEnd}`);
+            console.log(`Dates in range: ${datesInRange}`);
+            datesInRange.forEach(date => {
+                if (isFreeDay(activeUser, date)) {
+                    removeFreeDay(activeUser, date);
+                } else {
+                    addFreeDay(activeUser, date);
+                }
+            });
+            isSelectingRange = false;
+            rangeStart = null;
+            rangeEnd = null;
+            console.log('Range completed')
+        }
+        
+        renderCalendar();
     }
 });
 renderCalendar(); 
