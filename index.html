@@ -8,6 +8,14 @@
 </head>
 <body>
   <h1>Calendar</h1>
+  <div class="user-management">
+    <input type="text" id="new-username" placeholder="Enter username">
+    <button id="add-user" onclick="addUser(document.getElementById('new-username').value)">Add User</button>
+    <select id="user-select" onchange="setActiveUser(this.value)">
+
+    </select>
+    <span id="active-user"></span>
+  </div>
   <div class="calendar">
     <header>
         <h3></h3>

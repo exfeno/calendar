@@ -74,6 +74,54 @@ function getDatesInRange(startDate, endDate) {
     return dates;
 }
 
+function addUser(username) {
+    const user = username.trim();
+    if (!user) {
+        console.error('User cannot be empty');
+        return;
+    }
+    if (freeDays[user]) {
+        console.error('User already exists');
+        return;
+    }
+    freeDays[user] = new Set();
+    updateUserSelect();
+    updateActiveUserDisplay();
+    document.getElementById('new-username').value = '';
+    
+    
+}
+
+function setActiveUser(username) {
+    activeUser = username;
+    updateActiveUserDisplay();
+    renderCalendar();
+}
+
+function getAllUsers() {
+    return Object.keys(freeDays);
+}
+
+function updateUserSelect() {
+    const userSelect = document.getElementById('user-select');
+    userSelect.innerHTML = '';
+    getAllUsers().forEach(user => {
+        const option = document.createElement('option');
+        option.value = user;
+        option.textContent = user;
+        if (user === activeUser) {
+            option.selected = true;
+        }
+        userSelect.appendChild(option);
+    });
+}
+
+function updateActiveUserDisplay() {
+    const activeUserDisplay = document.getElementById('active-user');
+    activeUserDisplay.textContent = `Current User: ${activeUser}`;
+}
+
+
 
 
 
@@ -186,3 +234,5 @@ dates.addEventListener('click', e => {
     }
 });
 renderCalendar(); 
+updateUserSelect();
+updateActiveUserDisplay();
