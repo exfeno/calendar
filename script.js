@@ -1,6 +1,9 @@
 const header = document.querySelector(".calendar h3");
 const dates = document.querySelector('.dates');
 const navs =document.querySelectorAll('#prev, #next');
+let comparisonMode = false;
+let userA = null;
+let userB = null;
 
 const months = [
     "January",
@@ -121,6 +124,72 @@ function updateActiveUserDisplay() {
     activeUserDisplay.textContent = `Current User: ${activeUser}`;
 }
 
+function toggleComparisonMode() {
+    const checkbox = document.getElementById('comparison-toggle');
+    comparisonMode = checkbox.checked;
+    
+    if (comparisonMode) {
+        document.querySelector('.calendar').classList.add('comparison-mode');
+        document.getElementById('comparison-controls').style.display = 'block';
+        document.getElementById('pattern-legend').style.display = 'block';
+        document.getElementById('single-user-controls').style.display = 'none';
+        updateComparisonSelects();
+        const users = getAllUsers();
+        if (users.length >= 2) {
+            userA = users[0];
+            userB = users[1];
+        }
+        else if (users.length === 1) {
+            userA = users[0];
+            userB = null;
+        }
+        else {
+            userA = null;
+            userB = null;
+        }
+    } else {
+        document.querySelector('.calendar').classList.remove('comparison-mode');
+        document.getElementById('comparison-controls').style.display = 'none';
+        document.getElementById('pattern-legend').style.display = 'none';
+        document.getElementById('single-user-controls').style.display = 'block';
+        userA = null;
+        userB = null;
+    }
+    renderCalendar();
+}
+
+function updateComparisonSelects() {
+    const one = document.getElementById('user-a-select');
+    const two = document.getElementById('user-b-select');
+    one.innerHTML = '';
+    two.innerHTML = '';
+    getAllUsers().forEach(user => {
+        const optionA = document.createElement('option');
+        optionA.value = user;
+        optionA.textContent = user;
+        if (user === userA) {
+            optionA.selected = true;
+        }
+        one.appendChild(optionA);
+        const optionB = document.createElement('option');
+        optionB.value = user;
+        optionB.textContent = user;
+        if (user === userB) {
+            optionB.selected = true;
+        }
+        two.appendChild(optionB);
+    })
+}
+
+function setUserA(user) {
+    userA = user;
+    renderCalendar();
+}
+
+function setUserB(user) {
+    userB = user;
+    renderCalendar();
+}
 
 
 
@@ -162,7 +231,16 @@ function renderCalendar() {
                 classes += 'today';
             }
 
-        if (isFreeDay(activeUser, formatted)) {
+        if (comparisonMode) {
+            if (isFreeDay(userA, formatted) && isFreeDay(userB, formatted)) {
+                classes += (classes ? ' ' : '') + 'intersection';
+            } else if (isFreeDay(userA, formatted)) {
+                classes += (classes ? ' ' : '') + 'user-a-only';
+            } else if (isFreeDay(userB, formatted)) {
+                classes += (classes ? ' ' : '') + 'user-b-only';
+            }
+        }
+        else if (isFreeDay(activeUser, formatted)) {
             classes += (classes ? ' ' : '') + 'free';
         }
 
@@ -204,6 +282,9 @@ navs.forEach(nav=> {
 dates.addEventListener('click', e => {
     const target = e.target;
     if (!target.classList.contains('inactive') && target.nodeName === 'LI') {
+        if (comparisonMode) {
+            return;
+        }
         const clickedDate = target.dataset.date;
         if (!isSelectingRange) {
             rangeStart = clickedDate;

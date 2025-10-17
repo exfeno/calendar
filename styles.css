@@ -155,3 +155,82 @@ prev:hover::before, next:hover::before {
     background: #8fbc8f;
     opacity: 0.7;
 }
+.dates li.user-a-only {
+    background: repeating-linear-gradient(
+        45deg,
+        #ad6e6e,
+        #701f1f 10px,
+        #251d1d 10px,
+        #453e3e 20px
+    );
+}
+.dates li.user-b-only {
+    background: repeating-linear-gradient(
+        45deg,
+        #3d1bff,
+        #8d07d5 10px,
+        #7507b0 10px,
+        #a901fd 20px
+    ),
+    repeating-linear-gradient(
+        -45deg,
+        #3d1bff,
+        #8d07d5 10px,
+        #7507b0 10px,
+        #a901fd 20px
+    ),
+    #a901fd;
+    
+}
+.dates li.intersection {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+}
+.legend-box {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: #1e1f21 solid 1px;
+    margin-right: 5px;
+}
+.legend-box.user-a-pattern {
+     background: repeating-linear-gradient(
+        45deg,
+        #ad6e6e,
+        #701f1f 10px,
+        #251d1d 10px,
+        #453e3e 20px
+    );
+}
+.legend-box.user-b-pattern {
+    background: repeating-linear-gradient(
+        45deg,
+        #3d1bff,
+        #8d07d5 10px,
+        #7507b0 10px,
+        #a901fd 20px
+    ),
+    repeating-linear-gradient(
+        -45deg,
+        #3d1bff,
+        #8d07d5 10px,
+        #7507b0 10px,
+        #a901fd 20px
+    ),
+    #a901fd;
+}
+.legend-box.intersection-pattern {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+}
+.calendar.comparison-mode .dates li:not(.inactive) {
+    cursor: default;
+    
+}
+.calendar.comparison-mode .dates li:not(.inactive):hover {
+    transform: none;
+    background: none;
+    color: inherit;
+}
